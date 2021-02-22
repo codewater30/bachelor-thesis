@@ -68,10 +68,20 @@ def detectStayPoints(traj , tThresh, dThresh):
 def isInRange(traj, dThresh) -> bool:
     pass
 
-def buildGraph(g):
+def buildGraph(g, locH):
     """build graph on a collection of SP clusters
+    """
+    c = g.getCNode(locH.getStart())   #last cluster node
 
+    for s in locH:
+        ci = g.getCNode(s)
+        if c is not ci:
+            #build edge
+            c.link(ci)
+            pass
+        c = ci
     
+    return g
 
     """
     pass
