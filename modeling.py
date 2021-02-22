@@ -5,7 +5,6 @@ class Coordinate:
         self.lngt = lngt
         self.time = time
 
-
 class StayPoint:
     def __init__(self, trajectory, tThresh, dThresh) -> None:
         def crdntAdd():
@@ -30,9 +29,15 @@ class ClustersGraph:
     def __init__(self, clusters):
         self.clusters = clusters
 
-def detectStayPoints(traj , tThresh, dThresh):
+    def getCNode(self, sp) -> CNode:
+        for c in self.clusters:
+            if c.isIn(sp):
+                return c
 
+
+def detectStayPoints(traj , tThresh, dThresh):
     """Detect stay points in a trajectory
+
     Param:
         tThresh: time threshold that a SP(stypnt) must exceed 
         dThresh: distance threshold that limits a SP
@@ -63,8 +68,6 @@ def detectStayPoints(traj , tThresh, dThresh):
         i += 1
     return styPts            
                         
-
-
 def isInRange(traj, dThresh) -> bool:
     pass
 
@@ -82,6 +85,3 @@ def buildGraph(g, locH):
         c = ci
     
     return g
-
-    """
-    pass
