@@ -16,9 +16,23 @@ class StayPoint:
         self.lat = functools.reduce(crdntAdd, (c.lat for c in trajectory))/len(trajectory)
         self.lngt = functools.reduce(crdntAdd, (c.lngt for c in trajectory))/len(trajectory)
 
-def detectStayPoints(traj , tThresh, dThresh):
-    """Detect stay points in a trajectory
+class CNode:
+    def __init__(self, cluster):
+        self.cluster = cluster
+        self.neighbors = set()
 
+    def isIn(self, sp: StayPoint) -> bool:
+        pass
+
+    def link(self, cnode):
+        self.neighbors.add(cnode)
+class ClustersGraph:
+    def __init__(self, clusters):
+        self.clusters = clusters
+
+def detectStayPoints(traj , tThresh, dThresh):
+
+    """Detect stay points in a trajectory
     Param:
         tThresh: time threshold that a SP(stypnt) must exceed 
         dThresh: distance threshold that limits a SP
@@ -52,4 +66,12 @@ def detectStayPoints(traj , tThresh, dThresh):
 
 
 def isInRange(traj, dThresh) -> bool:
+    pass
+
+def buildGraph(g):
+    """build graph on a collection of SP clusters
+
+    
+
+    """
     pass
