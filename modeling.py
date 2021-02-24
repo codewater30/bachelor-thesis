@@ -44,31 +44,32 @@ def detectStayPoints(traj , tThresh, dThresh):
     Return:
         styPts: compressed trajectory that is in series of SPs.
     """
-    start, i= 0
+    i = 0
+    l = len(traj)
     styPts = []
-    length = len(traj)
-    while i < length:
-        c = traj[i]
-        if c.time - traj[start].time >= tThresh:
-            if isInRange(traj[start:i+1], dThresh):
-                i += 1
-                while i < length and isInRange(traj[start:i+1], dThresh):
-                    i += 1
-                styPts.append(StayPoint(traj[start: i], tThresh, dThresh))
-                start = i
-                i -= 1
+    s = set()
+    while i < l - 1:
+        j = i + 1
+        f = False
+        while j < l:
+            dist = distance(traj[i], traj[j])
+            if dist < dThresh:
+                j += 1
+                flag = True
             else:
-                start += 1
-                while c.time - traj[start].time >= tThresh:
-                    if isInRange(traj[start:i+1], dThresh):
-                        styPts.append(StayPoint(traj[start: i+1], tThresh, dThresh))
-                        start = i + 1
-                        break
-                    start += 1
+                break
+        
+        if traj[j-1].time - traj[i].time > tThresh and flag:
+            for k in range(i, j):
+                s.add(traj[k])
+
+            if i == j - 1:
+                styPts.append(StayPoint(list(s), tThresh, dThresh))
+                s.clear()
         i += 1
-    return styPts            
+    return styPts
                         
-def isInRange(traj, dThresh) -> bool:
+def distance(i, j):
     pass
 
 def buildGraph(g, locH):
