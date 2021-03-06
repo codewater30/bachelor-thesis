@@ -1,20 +1,11 @@
-import functools
-class Coordinate:
-    def __init__(self, lat, lngt, time) -> None:
-        self.lat = lat
-        self.lngt = lngt
-        self.time = time
+"""location history modeling module
 
-class StayPoint:
-    def __init__(self, trajectory, tThresh, dThresh) -> None:
-        def crdntAdd():
-            pass
-        self.trajectory = trajectory
-        self.tThresh = tThresh
-        self.dThresh = dThresh
-        self.lat = functools.reduce(crdntAdd, (c.lat for c in trajectory))/len(trajectory)
-        self.lngt = functools.reduce(crdntAdd, (c.lngt for c in trajectory))/len(trajectory)
-
+Todo:
+    * smiplify styPts-related works
+    * add heiarchical tree
+        *add interface for inclusivity check at buildHTree()
+    
+"""
 import functools
 import numpy as np
 class CNode:
