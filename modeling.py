@@ -48,27 +48,30 @@ def detectStayPoints(traj , tThresh, dThresh):
     l = len(traj)
     styPts = []
     s = set()
+
+    def distance(a, b):
+       return np.linalg.norm(a - b)
+
     while i < l - 1:
         j = i + 1
         f = False
         while j < l:
-            dist = distance(traj[i], traj[j])
+            dist = np.linalg.norm(traj[i, 1:3], traj[j, 1:3])
             if dist < dThresh:
                 j += 1
                 flag = True
             else:
                 break
         
-        if traj[j-1].time - traj[i].time > tThresh and flag:
-            for k in range(i, j):
-                s.add(traj[k])
+        if traj[j-1, 0] - traj[i, 0] > tThresh and flag:
+            s.update(range(i, j))
 
             if i == j - 1:
-                styPts.append(StayPoint(list(s), tThresh, dThresh))
+                styPt = np.average(traj[list(s), ...])
+                styPts.append(s)
                 s.clear()
         i += 1
-    return styPts
-                        
+    return np.array(styPts)
 def distance(i, j):
     pass
 
