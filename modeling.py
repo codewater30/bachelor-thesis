@@ -72,8 +72,25 @@ def detectStayPoints(traj , tThresh, dThresh):
                 s.clear()
         i += 1
     return np.array(styPts)
-def distance(i, j):
-    pass
+def buildHTree(t, cIter):
+    try:
+        while True:
+            cn = CNode(next(cIter))
+            if cn in t:
+                t.addChild(cn)
+                returned = buildHTree(cn, cIter)
+                while returned in t:
+                    t.addChild(returned)
+                    returned = buildHTree(returned, cIter)
+                else:
+                    if returned == None:
+                        return t
+                    else: 
+                        return returned
+            else:
+                return cn
+    except StopIteration:
+        return None
 
 def buildGraph(g, locH):
     """build graph on a collection of SP clusters
