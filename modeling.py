@@ -15,17 +15,23 @@ class StayPoint:
         self.lat = functools.reduce(crdntAdd, (c.lat for c in trajectory))/len(trajectory)
         self.lngt = functools.reduce(crdntAdd, (c.lngt for c in trajectory))/len(trajectory)
 
+import functools
+import numpy as np
 class CNode:
     def __init__(self, cluster):
         self.cluster = cluster
+        self.childs = set()
         self.neighbors = set()
 
     def isIn(self, sp: StayPoint) -> bool:
         pass
+    
+    def addChild(self, c):
+        self.childs.add(c)
 
-    def link(self, cnode):
+    def addNeighbors(self, cnode):
         self.neighbors.add(cnode)
-class ClustersGraph:
+class CGraph:
     def __init__(self, clusters):
         self.clusters = clusters
 
@@ -35,14 +41,16 @@ class ClustersGraph:
                 return c
 
 
-def detectStayPoints(traj , tThresh, dThresh):
+def detectStayPoints(traj: np.ndarray, tThresh, dThresh):
     """Detect stay points in a trajectory
 
     Param:
+        traj: trajectory as a numpy array of the shape(n,3), each row as 
+            (time, x, y)
         tThresh: time threshold that a SP(stypnt) must exceed 
         dThresh: distance threshold that limits a SP
     Return:
-        styPts: compressed trajectory that is in series of SPs.
+        styPts: series of SPs.
     """
     i = 0
     l = len(traj)
@@ -72,6 +80,7 @@ def detectStayPoints(traj , tThresh, dThresh):
                 s.clear()
         i += 1
     return np.array(styPts)
+
 def buildHTree(t, cIter):
     try:
         while True:
@@ -101,8 +110,7 @@ def buildGraph(g, locH):
         ci = g.getCNode(s)
         if c is not ci:
             #build edge
-            c.link(ci)
-            pass
+            c.addNeighbors(ci)
         c = ci
     
     return g
