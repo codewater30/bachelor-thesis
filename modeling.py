@@ -10,15 +10,14 @@ import functools
 import numpy as np
 class CNode:
     def __init__(self, cluster):
-        self.cluster = cluster
-        self.childs = set()
+        self.children = set()
         self.neighbors = set()
 
     def isIn(self, sp: StayPoint) -> bool:
         pass
     
     def addChild(self, c):
-        self.childs.add(c)
+        self.children.add(c)
 
     def addNeighbors(self, cnode):
         self.neighbors.add(cnode)
