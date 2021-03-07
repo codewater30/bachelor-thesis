@@ -19,11 +19,19 @@ class CNode:
     def addChild(self, c):
         self.children.add(c)
 
-    def addNeighbors(self, cnode):
+    def addNeighbor(self, cnode):
         self.neighbors.add(cnode)
-class CGraph:
-    def __init__(self, clusters):
-        self.clusters = clusters
+    
+    def __contains__(self, item: tuple):
+        if item[0] >= self.cluster[0] and item[0] <= self.cluster[1]:
+            if item[1] >= self.cluster[0] and item[1] <= self.cluster[1]:
+                return True
+        return False
+    
+    def __contains__(self, item: int):
+        if item >= self.cluster[0] and item <= self.cluster[1]:
+            return True
+        return False
 
     def getCNode(self, sp) -> CNode:
         for c in self.clusters:
