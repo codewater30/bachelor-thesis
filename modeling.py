@@ -1,20 +1,19 @@
 """location history modeling module
 
 Todo:
-    * smiplify styPts-related works
-    * add heiarchical tree
-        *add interface for inclusivity check at buildHTree()
+    * complete heiarchical tree
+        *add array building in __buildHTree()
+        *sample -> ordering getOrder()
     
 """
 import functools
 import numpy as np
+from sklearn.cluster import OPTICS
 class CNode:
     def __init__(self, cluster):
+        self.cluster = cluster  # using index
         self.children = set()
         self.neighbors = set()
-
-    def isIn(self, sp: StayPoint) -> bool:
-        pass
     
     def addChild(self, c):
         self.children.add(c)
@@ -128,9 +127,6 @@ def detectStayPoints(traj: np.ndarray, tThresh, dThresh):
     styPts = []
     s = set()
 
-    def distance(a, b):
-       return np.linalg.norm(a - b)
-
     while i < l - 1:
         j = i + 1
         f = False
@@ -152,36 +148,4 @@ def detectStayPoints(traj: np.ndarray, tThresh, dThresh):
         i += 1
     return np.array(styPts)
 
-def buildHTree(t, cIter):
-    try:
-        while True:
-            cn = CNode(next(cIter))
-            if cn in t:
-                t.addChild(cn)
-                returned = buildHTree(cn, cIter)
-                while returned in t:
-                    t.addChild(returned)
-                    returned = buildHTree(returned, cIter)
-                else:
-                    if returned == None:
-                        return t
-                    else: 
-                        return returned
-            else:
-                return cn
-    except StopIteration:
-        return None
 
-def buildGraph(g, locH):
-    """build graph on a collection of SP clusters
-    """
-    c = g.getCNode(locH.getStart())   #last cluster node
-
-    for s in locH:
-        ci = g.getCNode(s)
-        if c is not ci:
-            #build edge
-            c.addNeighbors(ci)
-        c = ci
-    
-    return g
