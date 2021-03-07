@@ -3,3 +3,5 @@ example_google.py
 /assets
 TODO.md
 playground.py
+/examples
+/__pycache__
