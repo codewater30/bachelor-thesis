@@ -12,27 +12,26 @@ from sklearn.cluster import OPTICS
 class CNode:
     def __init__(self, cluster):
         self.cluster = cluster  # using index
-        self.children = set()
+        self.children = list()
         self.neighbors = set()
     
     def addChild(self, c):
-        self.children.add(c)
+        self.children.append(c)
 
     def addNeighbor(self, cnode):
         self.neighbors.add(cnode)
     
-    def __contains__(self, item: tuple):
-        if item[0] >= self.cluster[0] and item[0] <= self.cluster[1]:
-            if item[1] >= self.cluster[0] and item[1] <= self.cluster[1]:
+    def __contains__(self, item):
+        if type(item) is list:
+            if item[0] >= self.cluster[0] and item[0] <= self.cluster[1]:
+                if item[1] >= self.cluster[0] and item[1] <= self.cluster[1]:
+                    return True
+            return False
+        if type(item) is int:
+            if item >= self.cluster[0] and item <= self.cluster[1]:
                 return True
-        return False
-    
-    def __contains__(self, item: int):
-        if item >= self.cluster[0] and item <= self.cluster[1]:
-            return True
-        return False
-
-
+            return False
+        
 class TBHG:
     def __init__(self, optics: OPTICS, locH):
         self.optics = optics
