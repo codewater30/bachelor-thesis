@@ -9,6 +9,7 @@ Todo:
 import functools
 import numpy as np
 from sklearn.cluster import OPTICS
+import math
 class CNode:
     def __init__(self, cluster):
         self.cluster = cluster  # using index
@@ -128,14 +129,12 @@ def detectStayPoints(traj: np.ndarray, tThresh, dThresh):
             else:
                 break
         
-        if traj[j-1, 0] - traj[i, 0] > tThresh and flag:#
-            s.update(range(i, j))
-
-        if i == j - 1 and s:
-            styPt = np.mean(traj[list(s)], axis=0)
+        if flag and traj[j-1, 0] - traj[i, 0] > tThresh:#
+            styPt = np.mean(traj[i:j], axis=0)
             styPts.append(styPt)
-            s.clear()
-        i += 1
+            i = j
+        else:
+            i += 1
     return np.array(styPts)
 
 
