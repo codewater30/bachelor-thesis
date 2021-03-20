@@ -33,12 +33,7 @@ class CNode:
             return False
         
 class TBHG:
-    def __init__(self, optics: OPTICS, locH):
-        self.optics = optics
-        self.hierarchy = self.__buildHierarchy(self.__buildHTree(self))
-        self.__buildGraph(self)
-
-    def __buildHierarchy(self, r: CNode):
+    def _buildHierarchy(self, r: CNode):
         h = []   
         level = [r]
         while level:
@@ -49,17 +44,12 @@ class TBHG:
             level = children
         return h
 
-
-    
-
-
-    def __buildGraph(self):
+    def _buildGraph(self):
         """build graph on a collection of SP clusters
         """
-        #** compute mapping: locH -> ordering_
         ordering = self.optics.ordering_
-        locH = np.ndarray.flatten(self.locH)
-        
+        # locH = np.ndarray.flatten(self.locH)
+        locH = self.locH 
         orderOfSPs = np.zeros_like(ordering)
         orderOfSPs[ordering] = np.arange(0, ordering.size)
 
@@ -85,28 +75,29 @@ class TBHG:
                     c += 1
                 prev = curr
 
-    def __buildHTree(self, optics: OPTICS):
+    def _buildHTree(self):
         #**
-        cIter = iter(optics.cluster_hierarchy[::-1])
-        r = CNode([0, len(optics.ordering_)])
+        ch = self.optics.cluster_hierarchy_
+        cIter = iter(ch[::-1])
+        r = CNode(next(cIter))
         try:
             cn = CNode(next(cIter))
             while True:
-                while cn in r:
+                while cn.cluster in r:
                     r.addChild(cn)
-                    cn = self.__buildHTree_helper(self, cn, cIter)
+                    cn = self._buildHTree_helper(cn, cIter)
                 # for debug    
                 else:
                     print("false")
         except StopIteration:
             return r
 
-    def __buildHTree_helper(self, r, cIter):
+    def _buildHTree_helper(self, r, cIter):
         while True:
             cn = CNode(next(cIter))
-            while cn in r:
+            while cn.cluster in r:
                 r.addChild(cn)
-                cn = self.__buildHTree_helper(self, cn, cIter)
+                cn = self._buildHTree_helper(cn, cIter)
             else:
                 return cn 
 
@@ -128,22 +119,22 @@ def detectStayPoints(traj: np.ndarray, tThresh, dThresh):
 
     while i < l - 1:
         j = i + 1
-        f = False
+        flag = False
         while j < l:
-            dist = np.linalg.norm(traj[i, 1:3], traj[j, 1:3])
+            dist = math.hypot(*(traj[i, 1:3] - traj[j, 1:3]))#
             if dist < dThresh:
                 j += 1
                 flag = True
             else:
                 break
         
-        if traj[j-1, 0] - traj[i, 0] > tThresh and flag:
+        if traj[j-1, 0] - traj[i, 0] > tThresh and flag:#
             s.update(range(i, j))
 
-            if i == j - 1:
-                styPt = np.average(traj[list(s), ...])
-                styPts.append(s)
-                s.clear()
+        if i == j - 1 and s:
+            styPt = np.mean(traj[list(s)], axis=0)
+            styPts.append(styPt)
+            s.clear()
         i += 1
     return np.array(styPts)
 
