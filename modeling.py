@@ -1,12 +1,8 @@
 """location history modeling module
 
 Todo:
-    * complete heiarchical tree
-        *add array building in __buildHTree()
-        *sample -> ordering getOrder()
     
 """
-import functools
 import numpy as np
 from sklearn.cluster import OPTICS
 import math
@@ -14,13 +10,13 @@ class CNode:
     def __init__(self, cluster):
         self.cluster = cluster  # using index
         self.children = list()
-        self.neighbors = set()
+        self.neighbors = defaultdict(int)
     
     def addChild(self, c):
         self.children.append(c)
 
     def addNeighbor(self, cnode):
-        self.neighbors.add(cnode)
+        self.neighbors[cnode] += 1
     
     def __contains__(self, item):
         if type(item) is list:
@@ -28,11 +24,15 @@ class CNode:
                 if item[1] >= self.cluster[0] and item[1] <= self.cluster[1]:
                     return True
             return False
-        if type(item) is int:
+        if np.issubdtype(type(item),np.integer):
             if item >= self.cluster[0] and item <= self.cluster[1]:
                 return True
             return False
-        
+        if type(item) is np.ndarray:
+            if item[0] >= self.cluster[0] and item[0] <= self.cluster[1]:
+                if item[1] >= self.cluster[0] and item[1] <= self.cluster[1]:
+                    return True
+            return False
 class TBHG:
     def _buildHierarchy(self, r: CNode):
         h = []   
@@ -136,5 +136,4 @@ def detectStayPoints(traj: np.ndarray, tThresh, dThresh):
         else:
             i += 1
     return np.array(styPts)
-
 
