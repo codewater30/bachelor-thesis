@@ -62,20 +62,20 @@ class TBHG:
                 return None
                 
         for l in self.hierarchy:
-            n = len(l)  
-            maxEdgeCount = n*(n-1)
-            c = 0
-
-            prev = getCNode(l, orderOfSPs[locH[0]])   
-            for s in locH and c < maxEdgeCount:
-                temp = getCNode(l, orderOfSPs[s])   
-                curr = temp if temp else curr                
-                if prev is not curr:
-                    #build edge
-                    prev.addNeighbor(curr)
-                    c += 1
-                prev = curr
-
+            offSet = index = 0
+            prev = getCNode(l, orderOfSPs[index])
+            for h in locH:
+                for i in range(len(h)):
+                    index = offSet + i
+                    curr = getCNode(l, orderOfSPs[index])   
+                    if curr:
+                        if prev is not curr:
+                            #build edge
+                            if prev:
+                                prev.addNeighbor(curr)
+                            prev = curr
+                offSet += len(h)
+    
     def _buildHTree(self):
         #**
         ch = self.optics.cluster_hierarchy_
