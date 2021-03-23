@@ -37,6 +37,12 @@ class CNode:
                     return True
             return False
 class TBHG:
+    def __init__(self, optics, locH):#, optics: OPTICS, locH):
+        self.optics = optics
+        self.locH = locH
+        self.hierarchy = self._buildHierarchy(self._buildHTree())
+        self._buildGraph()
+        
     def _buildHierarchy(self, r: CNode):
         h = []   
         level = [r]
