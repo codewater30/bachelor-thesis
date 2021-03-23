@@ -3,9 +3,12 @@
 Todo:
     
 """
+import math
+from collections import defaultdict
+
 import numpy as np
 from sklearn.cluster import OPTICS
-import math
+
 class CNode:
     def __init__(self, cluster):
         self.cluster = cluster  # using index
