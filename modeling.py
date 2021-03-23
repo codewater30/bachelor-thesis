@@ -150,7 +150,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import os, re
     data_dir = "data_NCSU"
-    clust = OPTICS(min_samples=4, xi=.001, min_cluster_size=.05)
+    clust = OPTICS(min_samples=100, xi=.05, min_cluster_size=.05)
     traces_files = [trace for trace in os.listdir(data_dir) if re.match(r'\d+\.trace',trace)]
     locH = []
     for trace_file in traces_files:
@@ -165,8 +165,12 @@ if __name__ == '__main__':
     cmap = plt.get_cmap("viridis", n_lables)
     for i in range(n_lables):
         x = X[clust.labels_ == i]
-        plt.scatter(x[:, 0], x[:, 1], color=cmap(i), alpha=0.3, marker=",")
+        plt.scatter(x[:, 0], x[:, 1], color=cmap(i), alpha=0.5)
     x = X[clust.labels_ == -1]
     plt.scatter(x[:, 0], x[:, 1], alpha=0.1)
     plt.show()
     plt.close()
+    
+    tbhg = TBHG(clust, locH)
+
+    print("hello")
