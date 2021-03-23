@@ -140,3 +140,27 @@ def detectStayPoints(traj: np.ndarray, tThresh, dThresh):
             i += 1
     return np.array(styPts)
 
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    import os, re
+    data_dir = "data_NCSU"
+    clust = OPTICS(min_samples=4, xi=.001, min_cluster_size=.05)
+    traces_files = [trace for trace in os.listdir(data_dir) if re.match(r'\d+\.trace',trace)]
+    locH = []
+    for trace_file in traces_files:
+        trace = np.loadtxt(os.path.join(data_dir, trace_file)) 
+        locH.append(detectStayPoints(trace, 90, 10))
+
+    X = [h[:, 1:3] for h in locH]
+    X = np.vstack(tuple(X))
+    clust.fit(X)
+
+    n_lables = np.amax(clust.labels_)
+    cmap = plt.get_cmap("viridis", n_lables)
+    for i in range(n_lables):
+        x = X[clust.labels_ == i]
+        plt.scatter(x[:, 0], x[:, 1], color=cmap(i), alpha=0.3, marker=",")
+    x = X[clust.labels_ == -1]
+    plt.scatter(x[:, 0], x[:, 1], alpha=0.1)
+    plt.show()
+    plt.close()
