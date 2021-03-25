@@ -36,3 +36,15 @@ def buildMatrix(clusters: np.ndarray[CNode], locH, ordering):
             vector.append(sum(indices[s:e]))
 
         matrix[:, i] = vector
+        
+def HITSInference(matrix: np.ndarray, times):
+    a = np.ones((matrix.shape[1]))
+    h = np.ones((matrix.shape[0]))
+
+    aMatrix = np.dot(matrix.T, matrix)
+    bMatrix = np.dot(matrix, matrix.T)
+    for i in range(times):
+        a = aMatrix.dot(a)
+        h = bMatrix.dot(h)
+        
+    return h, a
