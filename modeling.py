@@ -20,7 +20,13 @@ class CNode:
 
     def addNeighbor(self, cnode):
         self.neighbors[cnode] += 1
-    
+
+    def __repr__(self):
+        return str(self.cluster)
+        
+    def __str__(self):
+        return str(self.cluster)
+
     def __contains__(self, item):
         if type(item) is list:
             if item[0] >= self.cluster[0] and item[0] <= self.cluster[1]:
