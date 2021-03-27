@@ -47,12 +47,12 @@ class TBHG:
     def __init__(self, optics=None, locH=None):
         if optics:
             self.optics = optics
-            self.hierarchy = self._buildHierarchy(self._build_tree())
+            self.hierarchy = self._build_hierarchy(self._build_tree())
             if locH:
                 self.locH = locH
                 self._build_graph()      
             
-    def _buildHierarchy(self, r: CNode):
+    def _build_hierarchy(self, r: CNode):
         h = []   
         level = [r]
         while level:
@@ -63,7 +63,7 @@ class TBHG:
             level = children
         return h
 
-    def _buildGraph(self):
+    def _build_graph(self):
         """build graph on a collection of SP clusters
         """
         ordering = self.optics.ordering_
@@ -94,7 +94,7 @@ class TBHG:
                             prev = curr
                 offSet += len(h)
     
-    def _buildHTree(self):
+    def _build_tree(self, cluster_hierarchy=None):
         #**
         ch = self.optics.cluster_hierarchy_
         cIter = iter(ch[::-1])
@@ -104,23 +104,23 @@ class TBHG:
             while True:
                 while cn.cluster in r:
                     r.addChild(cn)
-                    cn = self._buildHTree_helper(cn, cIter)
+                    cn = self._build_tree_helper(cn, cIter)
                 # for debug    
                 else:
                     print("false")
         except StopIteration:
             return r
 
-    def _buildHTree_helper(self, r, cIter):
+    def _build_tree_helper(self, r, cIter):
         while True:
             cn = CNode(next(cIter))
             while cn.cluster in r:
                 r.addChild(cn)
-                cn = self._buildHTree_helper(cn, cIter)
+                cn = self._build_tree_helper(cn, cIter)
             else:
                 return cn 
 
-def detectStayPoints(traj: np.ndarray, tThresh, dThresh):
+def detect_staypoints(traj: np.ndarray, tThresh, dThresh):
     """Detect stay points in a trajectory
 
     Param:

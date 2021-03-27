@@ -3,7 +3,7 @@ import numpy as np
 from modeling import TBHG
 from modeling import CNode
 
-def collectLocation(searchDepth, cluster: CNode):
+def collect_locations(searchDepth, cluster: CNode):
     children = [cluster]
     for i in range(searchDepth):
         assert children
@@ -14,9 +14,7 @@ def collectLocation(searchDepth, cluster: CNode):
 
     return children
 
-def buildMatrix(clusters: np.ndarray[CNode], locH, ordering):
-    hisLens = [len(h) for h in locH]
-
+def build_matrix(clusters, locH, ordering):
     #init matrix 
     matrix = np.zeros((len(locH), len(clusters)))
 
@@ -37,7 +35,7 @@ def buildMatrix(clusters: np.ndarray[CNode], locH, ordering):
 
         matrix[:, i] = vector
         
-def HITSInference(matrix: np.ndarray, times):
+def HITS_inference(matrix: np.ndarray, times):
     a = np.ones((matrix.shape[1]))
     h = np.ones((matrix.shape[0]))
 

@@ -1,5 +1,5 @@
     @ut.SkipTest
-    def test_collectLoactions(self):
+    def test_collect_Loactions(self):
         class OPTICS:
             def __init__(self):
                 pass
@@ -12,15 +12,15 @@
         optics.cluster_hierarchy_ = mockClusters
         
         tbhg.optics = optics
-        r = tbhg._buildHTree()
-        h = tbhg._buildHierarchy(r)
+        r = tbhg._build_tree()
+        h = tbhg._build_hierarchy(r)
 
         f = lambda cnodes: [cnode.cluster for cnode in cnodes]
 
-        res1 = f(inferencing.collectLocations(1, r))
-        res2 = f(inferencing.collectLocations(2, r))
-        res3 = f(inferencing.collectLocations(3, r))
-        res4 = f(inferencing.collectLocations(4, r))
+        res1 = f(inferencing.collect_locations(1, r))
+        res2 = f(inferencing.collect_locations(2, r))
+        res3 = f(inferencing.collect_locations(3, r))
+        res4 = f(inferencing.collect_locations(4, r))
         res = [res1, res2, res3, res4]
         expected1 = [[0,50], [80, 99]]
         expected2 = [[0,25], [30, 49], [85,98]]

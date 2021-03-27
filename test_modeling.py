@@ -74,7 +74,7 @@ class TestTBHG(ut.TestCase):
         pass
     
     @ut.SkipTest
-    def test_buildHTree(self):
+    def test_build_tree(self):
         def traverse(cnode, l):
             if not cnode:
                 return l
@@ -90,36 +90,34 @@ class TestTBHG(ut.TestCase):
         # optics.ordering_ = [x for x in range(11)]
         # tbhg.optics = optics
         # root = tbhg._buildHTree()
-        root = self.tbhg._buildHTree()
+        root = self.tbhg._build_tree()
         
         l = []
         traverse(root, l)
 
         self.assertTrue(np.array_equal(l[::-1], self.tbhg.optics.cluster_hierarchy_))
 
-    @ut.SkipTest    
-    def test_buildHierarchy(self):
+    def test_build_hierarchy(self):
         tbhg = modeling.TBHG()
         optics = OPTICS_()
         optics.cluster_hierarchy_ = [[0,4], [6,8], [5,8], [8,10], [0,10]]
         optics.ordering_ = [x for x in range(11)]
         tbhg.optics = optics
-        r = tbhg._buildHTree()
-        h = tbhg._buildHierarchy(r)
+        r = tbhg._build_tree()
+        h = tbhg._build_hierarchy(r)
         for i in h:
             print("\n")
             for j in i:
                 print(j.cluster, end="")
-
-    def test_buildGraph(self):
-        r = self.tbhg._buildHTree()
-        self.tbhg.hierarchy = self.tbhg._buildHierarchy(r)
-        self.tbhg._buildGraph()
+    def test_build_graph(self):
+        r = self.tbhg._build_tree()
+        self.tbhg.hierarchy = self.tbhg._build_hierarchy(r)
+        self.tbhg._build_graph()
         
 
 @ut.SkipTest
 class TestDetectStayPonts(ut.TestCase):
-    def test_detectStayPonts(self):
+    def test_detect_staypoints(self):
         trace = np.loadtxt("data_NCSU/1.trace", delimiter=" ")
         
 if __name__ == '__main__':
