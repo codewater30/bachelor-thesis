@@ -20,7 +20,7 @@ class CNode:
 
     def addNeighbor(self, cnode):
         self.neighbors[cnode] += 1
-
+        
     def __repr__(self):
         return str(self.cluster)
         
@@ -43,12 +43,15 @@ class CNode:
                     return True
             return False
 class TBHG:
-    def __init__(self, optics, locH):#, optics: OPTICS, locH):
-        self.optics = optics
-        self.locH = locH
-        self.hierarchy = self._buildHierarchy(self._buildHTree())
-        self._buildGraph()
-        
+    
+    def __init__(self, optics=None, locH=None):
+        if optics:
+            self.optics = optics
+            self.hierarchy = self._buildHierarchy(self._build_tree())
+            if locH:
+                self.locH = locH
+                self._build_graph()      
+            
     def _buildHierarchy(self, r: CNode):
         h = []   
         level = [r]
