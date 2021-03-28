@@ -14,26 +14,15 @@ def collect_locations(searchDepth, cluster: CNode):
 
     return children
 
-def build_matrix(clusters, locH, ordering):
+def build_matrix(clusters, locH):
     #init matrix 
-    matrix = np.zeros((len(locH), len(clusters)))
-
+    matrix = np.zeros((len(locH), len(clusters)), dtype=np.int32)
 
     for i, c in enumerate(clusters):
-        start, end = c.cluster
-        indices = np.zeros((np.size(locH),))
-
-        #mark occurrences 
-        indices[ordering[start:end+1]] = 1
-
-        #count times of visit to the location for each user
-        s = e = 0
-        vector = []
-        for l in hisLens:
-            s, e = e, l 
-            vector.append(sum(indices[s:e]))
-
+        vector = [c.visits[u] for u in range(len(locH))]
         matrix[:, i] = vector
+
+    return matrix
         
 def HITS_inference(matrix: np.ndarray, times):
     a = np.ones((matrix.shape[1]))

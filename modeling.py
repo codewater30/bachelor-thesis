@@ -18,12 +18,15 @@ class CNode:
     def addChild(self, c):
         self.children.append(c)
 
-    def addNeighbor(self, cnode):
-        self.neighbors[cnode] += 1
+    def add_neighbor(self, cnode, user):
+        self.neighbors[cnode][user] += 1
         
+    def add_visit(self, user):
+        self.visits[user] += 1
+
     def __repr__(self):
         return str(self.cluster)
-        
+
     def __str__(self):
         return str(self.cluster)
 
@@ -69,10 +72,10 @@ class TBHG:
         ordering = self.optics.ordering_
         # locH = np.ndarray.flatten(self.locH)
         locH = self.locH 
-        orderOfSPs = np.zeros_like(ordering)
-        orderOfSPs[ordering] = np.arange(0, ordering.size)
+        sp2order = np.zeros_like(ordering)
+        sp2order[ordering] = np.arange(0, ordering.size)
 
-        def getCNode(level, sp):
+        def getCNode(level: List[CNode], sp):
             for c in level:
                 if sp in c:
                     return c
@@ -80,19 +83,21 @@ class TBHG:
                 return None
                 
         for l in self.hierarchy:
-            offSet = index = 0
-            prev = getCNode(l, orderOfSPs[index])
-            for h in locH:
-                for i in range(len(h)):
-                    index = offSet + i
-                    curr = getCNode(l, orderOfSPs[index])   
-                    if curr:
-                        if prev is not curr:
+            off_set = index = 0
+            for user, h in enumerate(locH):
+                curr = getCNode(l, sp2order[index])
+                if curr:
+                    curr.visits[user] +=1
+                for index in range(off_set, off_set+len(h)):
+                    next = getCNode(l, sp2order[index])   
+                    if next:
+                        if curr is not next:
                             #build edge
-                            if prev:
-                                prev.addNeighbor(curr)
-                            prev = curr
-                offSet += len(h)
+                            if curr:
+                                curr.add_neighbor(next, user)
+                            next.add_visit(user)
+                            curr = next
+                off_set += len(h)
     
     def _build_tree(self, cluster_hierarchy=None):
         #**
