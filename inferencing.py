@@ -32,8 +32,7 @@ def HITS_inference(matrix: np.ndarray, times):
 
     aMatrix = np.dot(matrix.T, matrix)
     bMatrix = np.dot(matrix, matrix.T)
-    for i in range(times):
-        a = aMatrix.dot(a)
-        h = bMatrix.dot(h)
-        
+
+    a = np.linalg.matrix_power(aMatrix, times).dot(a)
+    h = np.linalg.matrix_power(bMatrix, times).dot(h)
     return h, a
