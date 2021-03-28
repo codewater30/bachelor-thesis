@@ -4,6 +4,8 @@ from modeling import TBHG
 from modeling import CNode
 
 def collect_locations(searchDepth, cluster: CNode):
+    if searchDepth == 0:
+        return []
     children = [cluster]
     for i in range(searchDepth):
         assert children
