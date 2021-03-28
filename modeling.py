@@ -10,10 +10,11 @@ import numpy as np
 from sklearn.cluster import OPTICS
 
 class CNode:
-    def __init__(self, cluster):
+    def __init__(self, cluster, children:List=None, neighbors=None, visits=None):
         self.cluster = cluster  # using index
-        self.children = list()
-        self.neighbors = defaultdict(int)
+        self.children = children if children else []
+        self.neighbors = neighbors if neighbors else defaultdict(lambda: defaultdict(int))
+        self.visits = visits if visits else defaultdict(int)
     
     def addChild(self, c):
         self.children.append(c)
@@ -101,8 +102,9 @@ class TBHG:
     
     def _build_tree(self, cluster_hierarchy=None):
         #**
-        ch = self.optics.cluster_hierarchy_
-        cIter = iter(ch[::-1])
+        if not cluster_hierarchy:
+            cluster_hierarchy = self.optics.cluster_hierarchy_
+        cIter = iter(cluster_hierarchy[::-1])
         r = CNode(next(cIter))
         try:
             cn = CNode(next(cIter))
