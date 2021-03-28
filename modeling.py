@@ -16,7 +16,7 @@ class CNode:
         self.neighbors = neighbors if neighbors else defaultdict(lambda: defaultdict(int))
         self.visits = visits if visits else defaultdict(int)
     
-    def addChild(self, c):
+    def add_child(self, c):
         self.children.append(c)
 
     def add_neighbor(self, cnode, user):
@@ -110,7 +110,7 @@ class TBHG:
             cn = CNode(next(cIter))
             while True:
                 while cn.cluster in r:
-                    r.addChild(cn)
+                    r.add_child(cn)
                     cn = self._build_tree_helper(cn, cIter)
                 # for debug    
                 else:
@@ -118,11 +118,11 @@ class TBHG:
         except StopIteration:
             return r
 
-    def _build_tree_helper(self, r, cIter):
+    def _build_tree_helper(self, r: CNode, cIter):
         while True:
             cn = CNode(next(cIter))
             while cn.cluster in r:
-                r.addChild(cn)
+                r.add_child(cn)
                 cn = self._build_tree_helper(cn, cIter)
             else:
                 return cn 
