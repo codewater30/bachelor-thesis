@@ -27,8 +27,8 @@ def build_matrix(clusters, locH):
     return matrix
         
 def HITS_inference(matrix: np.ndarray, times):
-    a = np.ones((matrix.shape[1]))
-    h = np.ones((matrix.shape[0]))
+    a = np.ones((matrix.shape[1]), dtype=np.int32)
+    h = np.ones((matrix.shape[0]), dtype=np.int32)
 
     aMatrix = np.dot(matrix.T, matrix)
     bMatrix = np.dot(matrix, matrix.T)
