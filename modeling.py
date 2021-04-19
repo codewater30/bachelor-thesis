@@ -1,7 +1,5 @@
-"""location history modeling module
+"""位置历史建模location history modeling module
 
-Todo:
-    
 """
 import math
 from collections import defaultdict
@@ -10,6 +8,20 @@ import numpy as np
 from sklearn.cluster import OPTICS
 
 class CNode:
+    """CNode，即cluster Node，集群节点，是作为树形层级结构的节点类。
+
+    Attribute
+    ---------
+    cluster : ndarray of shape(2,)
+        长度为2的numpy数组，是以[start, end]形式所标识的集群，
+        表示该集群在样本索引的聚类有序列表中所在的范围。
+
+    children : List[CNode]
+        子节点列表。
+
+    visits : defaultdict, key: int, value: int
+        用户访问记录，字典类型。
+    """
     def __init__(self, cluster=None, children:List=None, neighbors=None, visits=None):
         self.cluster = cluster  # using index
         self.children = children if children else []
@@ -18,7 +30,8 @@ class CNode:
     
     def add_child(self, c):
         self.children.append(c)
-
+    
+    #用户路线推荐的图结构，可以忽略。
     def add_neighbor(self, cnode, user):
         self.neighbors[cnode][user] += 1
         
@@ -62,16 +75,47 @@ class CNode:
                     return True
             return False
 class TBH:
+    """树型层级(tree-based hierarchy)。
+
+    存储停留点集群之间层级、父子关系的数据结构，是以CNode为节点的树形结构，
+    但同时也记录了每层所有节点。
+
+    Attributes
+    ----------
+    optics : OPTICS
+        optics聚类算法类实例，是已经过拟合的实例过，包含构建层级结构
+        所需要的集群信息，详见sklearn库官方文档。
+    
+    hierarchy : List[List[CNode]]
+        层级结构，每层节点以升序排列。
+
+    locH : List[ndarray of shape(n, 3)]
+        用户位置历史数据集。
+    """
     
     def __init__(self, optics=None, locH=None):
         if optics:
             self.optics = optics
             self.hierarchy = self._build_hierarchy(self._build_tree())
-            if locH:
+            if locH is not None:
                 self.locH = locH
                 self._build_graph()      
             
     def _build_hierarchy(self, r: CNode):
+        """构建层级
+
+        遍历树构建层级。
+
+        Params
+        ------
+        r : CNode
+            树的根节点。
+
+        Returns
+        -------
+        h : List[List[CNode]]
+            所构建的层级。
+        """
         h = []   
         level = [r]
         while level:
@@ -84,10 +128,13 @@ class TBH:
         return h
 
     def _build_graph(self):
-        """build graph on a collection of SP clusters
+        """在树型层级的每一层构建图
+        
+        注：本函数大部分工作是构建图，但是是用于路线推荐的，
+        只有next.add_visit(user)那一行是真正对兴趣点挖掘有用的
+        （我写完了才知道论文不用做路线推荐-_-||）。
         """
         ordering = self.optics.ordering_
-        # locH = np.ndarray.flatten(self.locH)
         locH = self.locH 
         sp2order = np.zeros_like(ordering)
         sp2order[ordering] = np.arange(0, ordering.size)
@@ -111,13 +158,24 @@ class TBH:
                         if curr is not next:
                             #build edge
                             if curr:
-                                curr.add_neighbor(next, user)
-                            next.add_visit(user)
+                                curr.add_neighbor(next, user) #这一部分可有可无
+                            next.add_visit(user)        #这一行最重要
                             curr = next
                 off_set += len(h)
     
     def _build_tree(self, cluster_hierarchy=None):
-        #**
+        """根据optics算法的拟合结果构建树
+
+        Params
+        ------
+        cluster_hierarchy : ndarray of shape (n_clusters, 2)
+            详见OPTICS的_cluster_hierarchy属性
+
+        Returns
+        -------
+        r : CNode
+            树的根节点
+        """
         if not cluster_hierarchy:
             cluster_hierarchy = self.optics.cluster_hierarchy_
         cIter = iter(cluster_hierarchy[::-1])
@@ -146,13 +204,23 @@ class TBH:
 def detect_staypoints(traj: np.ndarray, tThresh, dThresh):
     """Detect stay points in a trajectory
 
-    Param:
-        traj: trajectory as a numpy array of the shape(n,3), each row as 
-            (time, x, y)
-        tThresh: time threshold that a SP(stypnt) must exceed 
-        dThresh: distance threshold that limits a SP
-    Return:
-        styPts: series of SPs.
+    文档写的比较早了，当时用的英文，没考虑周全。
+    Params
+    ------
+    traj : 
+        trajectory as a numpy array of the shape(n,3), each row as 
+        (time, x, y)
+
+    tThresh : float
+        time threshold in seconds that a SP(stypnt) must exceed
+
+    dThresh : float
+        distance threshold in meters that limits a SP
+
+    Return
+    ------
+    styPts : ndarray of shape(n, 3), 
+        series of Stay Points, n is the number of styPts
     """
     i = 0
     l = len(traj)
