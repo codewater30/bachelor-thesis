@@ -23,10 +23,13 @@ def print_hierarchy(h):
         print(level)
 
 def build_hierarchy(optics):
-    tbhg = modeling.TBHG(optics)
+    tbhg = modeling.TBH(optics)
     return tbhg.hierarchy
 
 def build_tree(optics):
-    tbhg = modeling.TBHG()
+    tbhg = modeling.TBH()
     tbhg.optics = optics
     return tbhg._build_tree()
+
+def build_tbhg(optics, locH):
+    return modeling.TBH(optics, locH)
