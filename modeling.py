@@ -10,7 +10,7 @@ import numpy as np
 from sklearn.cluster import OPTICS
 
 class CNode:
-    def __init__(self, cluster, children:List=None, neighbors=None, visits=None):
+    def __init__(self, cluster=None, children:List=None, neighbors=None, visits=None):
         self.cluster = cluster  # using index
         self.children = children if children else []
         self.neighbors = neighbors if neighbors else defaultdict(lambda: defaultdict(int))
@@ -30,6 +30,21 @@ class CNode:
 
     def __str__(self):
         return str(self.cluster)
+
+    def __eq__(self, other):
+        s_0, s_1 = self.cluster[0], self.cluster[1] 
+        o_0, o_1 = other.cluster[0], other.cluster[1]
+        return s_0 == o_0 and s_1 == o_1 
+
+    def __lt__(self, other):
+        s_0, s_1 = self.cluster[0], self.cluster[1] 
+        o_0, o_1 = other.cluster[0], other.cluster[1]
+        if s_0 == o_0:
+            return s_1 < o_1
+        return s_0 < o_0
+
+    def __hash__(self):
+        return hash(str(self.cluster))
 
     def __contains__(self, item):
         if type(item) is list:
@@ -64,6 +79,7 @@ class TBHG:
             children = []
             for c in level:
                 children.extend(c.children)
+            children.sort() #每层节点升序排列
             level = children
         return h
 
