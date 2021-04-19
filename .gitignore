@@ -1,5 +1,4 @@
 example_google.py
-/data_ncsu
 /assets
 TODO.md
 playground.py
@@ -7,3 +6,4 @@ playground.py
 /__pycache__
 /test
 /.vscode
+plot_optics.py
