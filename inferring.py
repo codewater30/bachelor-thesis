@@ -4,7 +4,6 @@ from sklearn.cluster import OPTICS
 from modeling import TBH
 from modeling import CNode
 
-import modeling
 def collect_locations(ithgen, cluster: CNode):
     """搜寻并返回cluster的第ithgen代后代节点们
 
@@ -31,8 +30,8 @@ def collect_locations(ithgen, cluster: CNode):
         temp = []
         for c in children:
             temp.extend(c.children)
-            if not temp:
-                break
+        if not temp:
+            return []
         children = temp
 
     return children
