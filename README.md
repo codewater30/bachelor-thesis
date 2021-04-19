@@ -25,3 +25,9 @@ bachelor-thesis
 ├── test_inferring.py  inferring测试模块  
 ├── test_modeling.py  modeling测试模块  
 └── util.py             
+
+# Run
+
+```bash
+python main.py  
+```
