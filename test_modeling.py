@@ -50,6 +50,7 @@ class OPTICS_:
 class TestTBHG(ut.TestCase):
     def setUp(self):
         n_points_per_cluster = 250
+        np.random.seed(0)
         C1 = np.zeros((n_points_per_cluster, 3))
         C2 = np.zeros((n_points_per_cluster, 3))
         C3 = np.zeros((n_points_per_cluster, 3))
@@ -67,7 +68,7 @@ class TestTBHG(ut.TestCase):
         clust = OPTICS(min_samples=50, xi=.05, min_cluster_size=.05)
         # Run the fit
         clust.fit(X)
-        self.tbhg = modeling.TBHG()
+        self.tbhg = modeling.TBH()
         self.tbhg.optics = clust
         self.tbhg.locH = (C1, C2, C3, C4, C5, C6)
         # self.tbhg = TBHG(clust)
@@ -97,8 +98,9 @@ class TestTBHG(ut.TestCase):
 
         self.assertTrue(np.array_equal(l[::-1], self.tbhg.optics.cluster_hierarchy_))
 
+    @ut.SkipTest    
     def test_build_hierarchy(self):
-        tbhg = modeling.TBHG()
+        tbhg = modeling.TBH()
         optics = OPTICS_()
         optics.cluster_hierarchy_ = [[0,4], [6,8], [5,8], [8,10], [0,10]]
         optics.ordering_ = [x for x in range(11)]
@@ -106,14 +108,14 @@ class TestTBHG(ut.TestCase):
         r = tbhg._build_tree()
         h = tbhg._build_hierarchy(r)
         for i in h:
-            print("\n")
-            for j in i:
-                print(j.cluster, end="")
+            print(i)
+    # @ut.SkipTest
     def test_build_graph(self):
         r = self.tbhg._build_tree()
         self.tbhg.hierarchy = self.tbhg._build_hierarchy(r)
         self.tbhg._build_graph()
         
+        print("hello")
 
 @ut.SkipTest
 class TestDetectStayPonts(ut.TestCase):
