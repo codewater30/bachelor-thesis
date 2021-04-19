@@ -1,8 +1,8 @@
 # Environment
-OS: windows 10
-IDE: vscode 1.55.2
-Arch: x86-64
-Python Standard: Python 3.8.6 64bit
+OS: windows 10  
+IDE: vscode 1.55.2  
+Arch: x86-64  
+Python Standard: Python 3.8.6 64bit  
 
 # Dependencies
 | Name | Version|
