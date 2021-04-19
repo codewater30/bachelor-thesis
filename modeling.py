@@ -204,7 +204,8 @@ class TBH:
 def detect_staypoints(traj: np.ndarray, tThresh, dThresh):
     """Detect stay points in a trajectory
 
-    文档写的比较早了，当时用的英文，没考虑周全。
+    (文档写的比较早了，当时用的英文，没考虑周全)。
+
     Params
     ------
     traj : 
