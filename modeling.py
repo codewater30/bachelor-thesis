@@ -61,7 +61,7 @@ class CNode:
                 if item[1] >= self.cluster[0] and item[1] <= self.cluster[1]:
                     return True
             return False
-class TBHG:
+class TBH:
     
     def __init__(self, optics=None, locH=None):
         if optics:
