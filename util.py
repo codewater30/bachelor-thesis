@@ -31,5 +31,5 @@ def build_tree(optics):
     tbhg.optics = optics
     return tbhg._build_tree()
 
-def build_tbhg(optics, locH):
+def build_tbh(optics, locH):
     return modeling.TBH(optics, locH)
